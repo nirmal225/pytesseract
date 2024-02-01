@@ -1,11 +1,17 @@
-from flask import Flask
+from flask import Flask, request
+from flask_cors import CORS
+from Pytesseract import Pytesseract
 
 app = Flask(__name__)
+CORS(app)
 
 
-@app.route("/")
+@app.route("/captcha")
 def hello_world():
-    return "<p>Hello, World!</p>"
+    encoded_text = request.args.get('encodedData').replace(" ", "+")
+    py = Pytesseract()
+    py.save_mage(encoded_text)
+    return {'captcha': py.get_captcha().replace("", "")}
 
 
 if __name__ == '__main__':
